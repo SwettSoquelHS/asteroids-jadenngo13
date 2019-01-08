@@ -1,5 +1,5 @@
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
- All objects in this world that move must implemnt the Movalbe interface.
+ All objects in this world that move must implemnt the Movable interface.
  */
 interface Movable {
   /*
