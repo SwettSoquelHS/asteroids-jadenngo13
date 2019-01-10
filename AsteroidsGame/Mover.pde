@@ -69,30 +69,31 @@ interface Movable {
  */
 abstract class Mover {// implements Movable {
 
-  protected float x, y;
-  protected float speed;
-  protected float direction;
+  protected PVector location, velocity;
+  protected float direction, speed, size;
   protected int myColor;
   protected float radius;  
 
   /*
     Default Mover, not actually moving and directionless
    */
-  Mover(float x, float y) {
+  /*Mover(float x, float y) {
     //The line below shows how we can 
     //link this constructor to the constructor below through "this"
     this(x, y, 0, 0);
-  }
+  }*/
 
   /*
     Mover constructor specifying x, y position along with its speed and
    direction (in degrees)
    */
-  Mover(float x, float y, float speed, float direction) {
-    this.x = x;
-    this.y = y;
-    this.speed = speed;
+  Mover(float x, float y, float speed, float direction, float size) {
+    location = new PVector(x, y);
+    velocity = new PVector(speed*(float)Math.cos(radians(direction)), 
+      speed*(float)Math.sin(radians(direction)));
     this.direction = direction;
+    this.speed = speed;
+    this.size = size;
     myColor = 225;
     radius = 0.0;
   }
@@ -101,17 +102,10 @@ abstract class Mover {// implements Movable {
     Most of your movalbe objects should follow this pattern.
    */
   void update() {
-    x = x + speed*(float)Math.cos(radians(direction));
-    y = y + speed*(float)Math.sin(radians(direction));
-
-    if (x < -30) 
-      x = width+30;
-    if (x > width+30) 
-      x = -30;
-    if (y < -30) 
-      y = height+30;
-    if (y > height+30) 
-      y = -30;
+    location.x += velocity.x; //update x and y
+    location.y += velocity.y;
+    location.x = location.x + speed*(float)Math.cos(radians(direction));
+    location.y = location.y + speed*(float)Math.sin(radians(direction));
     //todo: You need to decide what to do when X is less than 0 or greater than width
     //todo: You need to decide what to do when Y is less than 0 or greater than height
   }

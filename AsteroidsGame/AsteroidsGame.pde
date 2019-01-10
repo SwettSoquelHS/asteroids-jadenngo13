@@ -25,13 +25,14 @@ public void setup() {
   for (int i = 0; i<asteroids.length; i++) {
     rx = random(0, width);
     ry = random(0, height);
-    rs = random(.5, 1);
+    rs = random(.2, .6);
     rd = random(0, 360);
-    asteroids[i] = new Asteroid(rx, ry, rs, rd);
+    rsize = random(20, 50);
+    asteroids[i] = new Asteroid(rx, ry, rs, rd, rsize);
   }
 
   //initialize ship
-  player1 = new Spaceship(width/2, height/2, 0, 180);
+  player1 = new Spaceship(width/2, height/2, 0, 180, 10); //x, y, speed, direction, size
   for (int i = 0; i<bullets.length; i++) {
     bullets[i] = null;
   }
@@ -52,48 +53,45 @@ public void setup() {
  Drawing work here
  */
 public void draw() {
-  //your code here
   background(0);
 
-  //Draw Starfield first
+  //Starfield
   for (int i = 0; i<starField.length; i++) {
     starField[i].show();
     if (!gameOver)
       starField[i].move();
   }
 
-  //Check bullet collisions
-  //TODO: Part III or IV - for not just leave this comment
-
-  //TODO: Part II, Update each of the Asteroids internals
+  //Bullet Collision
+  for (int i = 0; i<bullets.length; i++) {
+    if (bullets[i] != null) {
+      bullets[i].update();
+    }
+  }
 
   //Check for asteroid collisions against other asteroids and alter course
   //TODO: Part III, for now keep this comment in place
 
-  //Draw asteroids
-  //TODO: Part II
+  //Asteroids
   for (int i = 0; i<asteroids.length; i++) {
     asteroids[i].show();
-    asteroids[i].move();
+    asteroids[i].update();
   }
 
 
-  //Update spaceship
-  //TODO: Part I
+  //Spaceship
+  player1.show();
   player1.update();
-  player1.move();
 
   //Check for ship collision agaist asteroids
   //TODO: Part II or III
 
-  //Draw spaceship & and its bullets
-  //TODO: Part I, for now just render ship
-  player1.show();
-  for(int i = 0; i<bullets.length-1; i++){
-    if(bullets[i] != null){
-      bullets[i].move();
+  //Bullets
+  for (int i = 0; i<bullets.length-1; i++) {
+    if (bullets[i] != null) {
+      bullets[i].update();
       bullets[i].show();
-      if(bullets[i].dud){
+      if (bullets[i].dud) {
         bullets[i] = null;
       }
     }
@@ -114,7 +112,7 @@ public void draw() {
 void mousePressed() {
   //add shooting stuff here
   if (shotIndex < bullets.length-1) {
-    bullets[shotIndex] = new Bullet(player1.location.x, player1.location.y, 5, player1.direction);
+    bullets[shotIndex] = new Bullet(player1.location.x, player1.location.y, 2, player1.direction, 10);
     shotIndex++;
   } else {
     shotIndex = 0;

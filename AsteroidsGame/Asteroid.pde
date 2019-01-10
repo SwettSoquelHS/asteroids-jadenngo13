@@ -7,34 +7,41 @@
  to render the asteroid.
  */
 class Asteroid extends Mover {   
-  float x, y, speed, direction;
-  PVector location, velocity;
+  float hypotenuse, rotation;
+  float[] offSet = new float[8];
+  PVector[] coordinates = new PVector[8];
 
-  Asteroid(float x, float y, float speed, float direction) {
-    super(x, y, speed, direction);
-    location = new PVector(x, y);
-    velocity = new PVector(speed*(float)Math.cos(radians(direction)), 
-      speed*(float)Math.sin(radians(direction)));
-    this.speed = speed;
-    this.direction = direction;
+  Asteroid(float x, float y, float speed, float direction, float size) {
+    super(x, y, speed, direction, size);
+    rotation = 360/8;
+    this.hypotenuse = size*((float)Math.random()+1);
+    for (int i = 0; i<offSet.length; i++) {
+      offSet[i] = random(-5, 5);
+    }
+    for (int i = 0; i<coordinates.length; i++) {
+      coordinates[i] = new PVector((this.hypotenuse*(float)Math.cos(radians(rotation)))+offSet[i], (this.hypotenuse*(float)Math.sin(radians(rotation)))+offSet[i]);
+      rotation += random(40, 50);
+    }
   }
 
   void show() {
-    fill(255);
-    ellipse(location.x, location.y, 10, 10);
+    stroke(255);
+    pushMatrix();
+    translate(location.x, location.y);
+    beginShape();
+    stroke(250);
+    fill(#2E1708);
+    for (int i = 0; i<coordinates.length; i++) {
+      vertex(coordinates[i].x, coordinates[i].y);
+    }
+    endShape(CLOSE);
+    popMatrix();
   }
 
-  void move() {
-    location.x += velocity.x; //update x and y
-    location.y += velocity.y;
-    velocity.x = (speed*(float)Math.cos(radians(direction))); //update direction
-    velocity.y = (speed*(float)Math.sin(radians(direction)));
-    
-    //System.out.println(direction);
-    if (location.x > width || location.x < 0
-      || location.y > height || location.y < 0) {
-        //direction -= random(160, 190);
-        direction *= -1;
+  void update() {
+    super.update();
+    if(location.x + (size/2) > width){
+      velocity.x *= -1;
     }
   }
 }

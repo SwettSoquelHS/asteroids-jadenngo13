@@ -5,18 +5,13 @@
  might be useful.
  */
 class Spaceship extends Mover {
-  float x, y, hitbox, speed, direction; //ship x, y, hitbox, speed, and direction
-  float myColor, radius;
+  float hitbox; //ship x, y, hitbox, speed, and direction
   boolean FORWARD, RLEFT, RRIGHT;
-  int lives = 4;
-  PVector location, velocity;
+  int lives;
 
-  Spaceship(float x, float y, float speed, float direction) {
-    super(x, y, speed, direction);
-    location = new PVector(x, y);
-    velocity = new PVector(speed*(float)Math.cos(radians(direction)), 
-      speed*(float)Math.sin(radians(direction)));
-    this.speed = speed;
+  Spaceship(float x, float y, float speed, float direction, float size) {
+    super(x, y, speed, direction, size);
+    lives = 4;
   }
 
   void show() {
@@ -26,10 +21,31 @@ class Spaceship extends Mover {
     rotate(1.56);
     fill(#0DBCFF);
     triangle(0, -20, 10, 5, -10, 5); //ship body
+
+    beginShape(); //force field
+    fill(0, 0, 0, 0);
+    stroke(#FF520D);
+    if (lives == 4) {
+      ellipse(0, -5, 40, 40); //inner
+      ellipse(0, -5, 50, 50); //middle
+      ellipse(0, -5, 60, 60); //outer
+      hitbox = 30;
+    } else if (lives == 3) {
+      ellipse(0, -5, 40, 40);
+      ellipse(0, -5, 50, 50); //middle
+      hitbox = 25;
+    } else if (lives == 2) {
+      ellipse(0, -5, 40, 40);
+      hitbox = 20;
+    } else {
+      hitbox= 5;
+    }
+    endShape(); //end force field
+    noStroke();
     popMatrix();
   }
 
-  void move() {
+  void update() {
     if (ROTATE_LEFT)
       direction -= 2;
     if (ROTATE_RIGHT)
@@ -46,9 +62,6 @@ class Spaceship extends Mover {
       if (speed < 0)
         speed = 0;
     }
-    location.x += velocity.x; //update x and y
-    location.y += velocity.y;
-    velocity.x = (speed*(float)Math.cos(radians(direction))); //update direction
-    velocity.y = (speed*(float)Math.sin(radians(direction)));
+    super.update();
   }
 }
