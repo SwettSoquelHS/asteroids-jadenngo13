@@ -77,17 +77,17 @@ abstract class Mover {// implements Movable {
 
   /*
     Default Mover, not actually moving and directionless
-  */
+   */
   Mover(float x, float y) {
     //The line below shows how we can 
     //link this constructor to the constructor below through "this"
-    this(x, y, 0, 0);  
+    this(x, y, 0, 0);
   }
 
   /*
     Mover constructor specifying x, y position along with its speed and
-    direction (in degrees)
-  */
+   direction (in degrees)
+   */
   Mover(float x, float y, float speed, float direction) {
     this.x = x;
     this.y = y;
@@ -104,6 +104,14 @@ abstract class Mover {// implements Movable {
     x = x + speed*(float)Math.cos(radians(direction));
     y = y + speed*(float)Math.sin(radians(direction));
 
+    if (x < -30) 
+      x = width+30;
+    if (x > width+30) 
+      x = -30;
+    if (y < -30) 
+      y = height+30;
+    if (y > height+30) 
+      y = -30;
     //todo: You need to decide what to do when X is less than 0 or greater than width
     //todo: You need to decide what to do when Y is less than 0 or greater than height
   }
@@ -112,8 +120,8 @@ abstract class Mover {// implements Movable {
 
   /*
     Save this for your subclasses to override.
-    but notice how it is tagged with abstract, meaning 
-    it is incomplete. (It's like an I.O.U.)
+   but notice how it is tagged with abstract, meaning 
+   it is incomplete. (It's like an I.O.U.)
    */
   abstract void show();
 
@@ -121,9 +129,9 @@ abstract class Mover {// implements Movable {
   /*
     TODO: Part 4: Implement collision detection
    */
-  boolean collidingWith(Movable object){
-     return false; 
+  boolean collidingWith(Movable object) {
+    return false;
   }
-  
+
   //TODO: Part I: implement the methods of Moveable interface - delete this comment
 }
