@@ -41,7 +41,7 @@ class Spaceship extends Mover {
     } else {
       hitbox= 5;
     }
-    this.size = hitbox;
+    this.size = hitbox*2;
     endShape(); //end force field
     noStroke();
     popMatrix();
@@ -92,7 +92,7 @@ class Spaceship extends Mover {
   }
 
   float getRadius() {
-    return size/2;
+    return hitbox/2;
   }
 
   float getSpeed() {

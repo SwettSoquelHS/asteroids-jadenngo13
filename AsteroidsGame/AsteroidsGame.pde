@@ -1,10 +1,11 @@
 Asteroid[] asteroids = new Asteroid[10];
+Asteroid[] brokenAsteroids = new Asteroid[20];
 Star[] starField = new Star[100];
 Bullet[] bullets = new Bullet[10];
 Spaceship player1;
 float rx, ry, rs, rsize, angle, rd, baseSpeed; //rock x, y, size, angle, direction, and base speed(increments)
 float sx, sy, ssize, sspeed; //star x, y, size, and speed
-int shotIndex;
+int shotIndex, brokenIndex; //shotIndex, brokenAsteroid index
 boolean gameOver;
 float score, shotCount, killCount;
 String stats;
@@ -34,6 +35,10 @@ public void setup() {
     asteroids[i] = new Asteroid(rx, ry, rs, rd, rsize);
   }
 
+  for (int i = 0; i<brokenAsteroids.length; i++) {
+    brokenAsteroids[i] = null;
+  }
+
   //initialize ship
   player1 = new Spaceship(width/2, height/2, 0, 180, 30); //x, y, speed, direction, size
   for (int i = 0; i<bullets.length; i++) {
@@ -49,11 +54,6 @@ public void setup() {
     sspeed = random(.5, .8);
     starField[i] = new Star(sx, sy, ssize, sspeed);
   }
-
-  //Initialze Stats
-  stats = "Total Score: " + score +
-    "\n Total Lives: " + player1.lives + 
-    "\n Level: ";
 }
 
 
@@ -76,8 +76,11 @@ public void draw() {
       for (int j = 0; j<asteroids.length; j++) {
         if (asteroids[j] != null) {
           if (bullets[i].collidingWith(asteroids[j])) {
+            brokenIndex++;
+            killCount++;
             bullets[i].hit = true;
-            asteroids[j].hit = true;
+            asteroids[j] = null;
+            brokenAsteroids[brokenIndex]
           }
         }
       }
@@ -89,15 +92,11 @@ public void draw() {
 
   //Draw Asteroids
   for (int i = 0; i<asteroids.length; i++) {
-    if (asteroids[i].hit) {
-      asteroids[i] = null;
-    }
     if (asteroids[i] != null) {
       asteroids[i].show();
       asteroids[i].update();
-      ellipse(asteroids[i].location.x, asteroids[i].location.y, asteroids[i].size, asteroids[i].size);
       for (int j = 0; j<asteroids.length; j++) {
-        if (asteroids[i] != asteroids[j]) {
+        if (asteroids[i] != asteroids[j] && asteroids[j] != null) {
           if (asteroids[i].collidingWith(asteroids[j]))
             System.out.println("");
         }
@@ -105,19 +104,26 @@ public void draw() {
     }
   }
 
+  //Draw brokenAsteroids (if any)
+  for (int i = 0; i<brokenAsteroids.length; i++) {
+    if (brokenAsteroids[i] != null) {
+      brokenAsteroids[i].show();
+      brokenAsteroids[i].update();
+    }
+  }
 
   //Spaceship
   player1.show();
   player1.update();
+  for (int i = 0; i<asteroids.length; i++) {
+    if (asteroids[i] != null) {
+      if (player1.collidingWith(asteroids[i])) {
+        asteroids[i] = null;
+        player1.lives--;
+      }
+    }
+  }
 
-  //Check for ship collision agaist asteroids
-  /*for (int i = 0; i<asteroids.length; i++) {
-   if (asteroids[i] != null) {
-   if (player1.collidingWith(asteroids[i])) {
-   asteroids[i] = null;
-   }
-   }
-   } */
   //System.out.println(dist(player1.location.x, player1.location.y, 
   //    asteroids[0].getX(), asteroids[0].getY()));
 
@@ -136,6 +142,9 @@ public void draw() {
   //so for now we'll just leave this comment and come back to it in a bit. 
 
   //Stats
+  stats = "Total Score: " + score +
+    "\n Total Lives: " + player1.lives + 
+    "\n Level: ";
   score = round((100*(killCount/shotCount) + 100*(killCount)));
   fill(#FF520D);
   textSize(12);
