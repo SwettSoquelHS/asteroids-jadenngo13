@@ -67,7 +67,7 @@ interface Movable {
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
  Abstract base class Mover 
  */
-abstract class Mover {// implements Movable {
+abstract class Mover implements Movable {// implements Movable {
 
   protected PVector location, velocity;
   protected float direction, speed, size;
@@ -78,10 +78,10 @@ abstract class Mover {// implements Movable {
     Default Mover, not actually moving and directionless
    */
   /*Mover(float x, float y) {
-    //The line below shows how we can 
-    //link this constructor to the constructor below through "this"
-    this(x, y, 0, 0);
-  }*/
+   //The line below shows how we can 
+   //link this constructor to the constructor below through "this"
+   this(x, y, 0, 0);
+   }*/
 
   /*
     Mover constructor specifying x, y position along with its speed and
@@ -106,8 +106,6 @@ abstract class Mover {// implements Movable {
     location.y += velocity.y;
     location.x = location.x + speed*(float)Math.cos(radians(direction));
     location.y = location.y + speed*(float)Math.sin(radians(direction));
-    //todo: You need to decide what to do when X is less than 0 or greater than width
-    //todo: You need to decide what to do when Y is less than 0 or greater than height
   }
 
 
@@ -124,7 +122,7 @@ abstract class Mover {// implements Movable {
     TODO: Part 4: Implement collision detection
    */
   boolean collidingWith(Movable object) {
-    return false;
+    return(dist(location.x, location.y, object.getX(), object.getY()) < (object.getRadius())+ (size/2));
   }
 
   //TODO: Part I: implement the methods of Moveable interface - delete this comment

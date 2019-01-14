@@ -9,7 +9,7 @@ class Bullet extends Mover {
 
   void update() {
     if (dist(location.x, location.y, player1.location.x, player1.location.y)<300) {
-       super.update();
+      super.update();
     } else {
       dud = true;
     }
@@ -18,5 +18,33 @@ class Bullet extends Mover {
   void show() {
     fill(#0DBCFF);
     ellipse(location.x, location.y, size, size);
+  }
+
+  float getX() {
+    return location.x;
+  }
+
+  float getY() {
+    return location.y;
+  }
+
+  float getDirection() {
+    return direction;
+  }
+  
+  float getRadius(){
+    return size;
+  }
+  
+  float getSpeed(){
+    return speed;
+  }
+  
+  void setDirection(float newDirectionInDegrees){
+    direction = newDirectionInDegrees;
+  }
+  
+  void setSpeed(float newSpeed){
+    speed = newSpeed;
   }
 }

@@ -10,6 +10,7 @@ class Asteroid extends Mover {
   float hypotenuse, rotation;
   float[] offSet = new float[8];
   PVector[] coordinates = new PVector[8];
+  boolean hit;
 
   Asteroid(float x, float y, float speed, float direction, float size) {
     super(x, y, speed, direction, size);
@@ -22,6 +23,7 @@ class Asteroid extends Mover {
       coordinates[i] = new PVector((this.hypotenuse*(float)Math.cos(radians(rotation)))+offSet[i], (this.hypotenuse*(float)Math.sin(radians(rotation)))+offSet[i]);
       rotation += random(40, 50);
     }
+    this.size = dist(coordinates[0].x, coordinates[0].y, coordinates[3].x, coordinates[3].y);
   }
 
   void show() {
@@ -39,9 +41,47 @@ class Asteroid extends Mover {
   }
 
   void update() {
-    super.update();
-    if(location.x + (size/2) > width){
-      velocity.x *= -1;
+   // System.out.println("Velocity x: " + velocity.x + " Vecloity y: " + velocity.y + " Direction: " + direction);
+    //System.out.println("Location x: " + location.x + " Location y: " + location.y);
+    
+    //testing out of bounds
+    if(location.x > width+size){
+      location.x = -size;
+    } else if(location.x < -size){
+      location.x = width+size;
+    } else if(location.y > height+size){
+      location.y = -size;
+    } else if(location.y < -size){
+      location.y = height+size;
     }
+    super.update();
+  }
+
+  float getX() {
+    return location.x;
+  }
+
+  float getY() {
+    return location.y;
+  }
+
+  float getDirection() {
+    return direction;
+  }
+
+  float getRadius() {
+    return size/2;
+  }
+
+  float getSpeed() {
+    return speed;
+  }
+
+  void setDirection(float newDirectionInDegrees) {
+    direction = newDirectionInDegrees;
+  }
+
+  void setSpeed(float newSpeed) {
+    speed = newSpeed;
   }
 }

@@ -6,6 +6,8 @@ float rx, ry, rs, rsize, angle, rd, baseSpeed; //rock x, y, size, angle, directi
 float sx, sy, ssize, sspeed; //star x, y, size, and speed
 int shotIndex;
 boolean gameOver;
+float score, shotCount, killCount;
+String stats;
 
 /*
   Track User keyboard input
@@ -20,7 +22,8 @@ boolean MOVE_FORWARD; //User is pressing ^ arrow
  */
 public void setup() {
   size(800, 600);
-  //initialize your asteroid array and fill it
+
+  //initialize asteroids
   //setupAsteroids();
   for (int i = 0; i<asteroids.length; i++) {
     rx = random(0, width);
@@ -32,7 +35,7 @@ public void setup() {
   }
 
   //initialize ship
-  player1 = new Spaceship(width/2, height/2, 0, 180, 10); //x, y, speed, direction, size
+  player1 = new Spaceship(width/2, height/2, 0, 180, 30); //x, y, speed, direction, size
   for (int i = 0; i<bullets.length; i++) {
     bullets[i] = null;
   }
@@ -46,6 +49,11 @@ public void setup() {
     sspeed = random(.5, .8);
     starField[i] = new Star(sx, sy, ssize, sspeed);
   }
+
+  //Initialze Stats
+  stats = "Total Score: " + score +
+    "\n Total Lives: " + player1.lives + 
+    "\n Level: ";
 }
 
 
@@ -65,17 +73,36 @@ public void draw() {
   //Bullet Collision
   for (int i = 0; i<bullets.length; i++) {
     if (bullets[i] != null) {
-      bullets[i].update();
+      for (int j = 0; j<asteroids.length; j++) {
+        if (asteroids[j] != null) {
+          if (bullets[i].collidingWith(asteroids[j])) {
+            bullets[i].hit = true;
+            asteroids[j].hit = true;
+          }
+        }
+      }
     }
   }
 
   //Check for asteroid collisions against other asteroids and alter course
   //TODO: Part III, for now keep this comment in place
 
-  //Asteroids
+  //Draw Asteroids
   for (int i = 0; i<asteroids.length; i++) {
-    asteroids[i].show();
-    asteroids[i].update();
+    if (asteroids[i].hit) {
+      asteroids[i] = null;
+    }
+    if (asteroids[i] != null) {
+      asteroids[i].show();
+      asteroids[i].update();
+      ellipse(asteroids[i].location.x, asteroids[i].location.y, asteroids[i].size, asteroids[i].size);
+      for (int j = 0; j<asteroids.length; j++) {
+        if (asteroids[i] != asteroids[j]) {
+          if (asteroids[i].collidingWith(asteroids[j]))
+            System.out.println("");
+        }
+      }
+    }
   }
 
 
@@ -84,14 +111,22 @@ public void draw() {
   player1.update();
 
   //Check for ship collision agaist asteroids
-  //TODO: Part II or III
+  /*for (int i = 0; i<asteroids.length; i++) {
+   if (asteroids[i] != null) {
+   if (player1.collidingWith(asteroids[i])) {
+   asteroids[i] = null;
+   }
+   }
+   } */
+  //System.out.println(dist(player1.location.x, player1.location.y, 
+  //    asteroids[0].getX(), asteroids[0].getY()));
 
   //Bullets
   for (int i = 0; i<bullets.length-1; i++) {
     if (bullets[i] != null) {
       bullets[i].update();
       bullets[i].show();
-      if (bullets[i].dud) {
+      if (bullets[i].dud || bullets[i].hit) {
         bullets[i] = null;
       }
     }
@@ -100,8 +135,11 @@ public void draw() {
   //TODO: Part IV - we will use a new feature in Java called an ArrayList, 
   //so for now we'll just leave this comment and come back to it in a bit. 
 
-  //Update score
-  //TODO: Keep track of a score and output the score at the top right
+  //Stats
+  score = round((100*(killCount/shotCount) + 100*(killCount)));
+  fill(#FF520D);
+  textSize(12);
+  text(stats, 30, 30);
 }
 
 
@@ -114,6 +152,7 @@ void mousePressed() {
   if (shotIndex < bullets.length-1) {
     bullets[shotIndex] = new Bullet(player1.location.x, player1.location.y, 2, player1.direction, 10);
     shotIndex++;
+    shotCount++;
   } else {
     shotIndex = 0;
   }

@@ -12,6 +12,7 @@ class Spaceship extends Mover {
   Spaceship(float x, float y, float speed, float direction, float size) {
     super(x, y, speed, direction, size);
     lives = 4;
+    this.size = 30;
   }
 
   void show() {
@@ -40,6 +41,7 @@ class Spaceship extends Mover {
     } else {
       hitbox= 5;
     }
+    this.size = hitbox;
     endShape(); //end force field
     noStroke();
     popMatrix();
@@ -62,6 +64,46 @@ class Spaceship extends Mover {
       if (speed < 0)
         speed = 0;
     }
+    
+    //testing out of bounds
+    if(location.x > width+size){
+      location.x = -size;
+    } else if(location.x < -size){
+      location.x = width+size;
+    } else if(location.y > height+size){
+      location.y = -size;
+    } else if(location.y < -size){
+      location.y = height+size;
+    } 
+    
     super.update();
+  }
+
+  float getX() {
+    return location.x;
+  }
+
+  float getY() {
+    return location.y;
+  }
+
+  float getDirection() {
+    return direction;
+  }
+
+  float getRadius() {
+    return size/2;
+  }
+
+  float getSpeed() {
+    return speed;
+  }
+
+  void setDirection(float newDirectionInDegrees) {
+    direction = newDirectionInDegrees;
+  }
+
+  void setSpeed(float newSpeed) {
+    speed = newSpeed;
   }
 }
