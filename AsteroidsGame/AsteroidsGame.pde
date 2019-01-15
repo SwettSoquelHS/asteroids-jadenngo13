@@ -4,6 +4,7 @@ Star[] starField = new Star[100];
 Bullet[] bullets = new Bullet[10];
 Spaceship player1;
 float rx, ry, rs, rsize, angle, rd, baseSpeed; //rock x, y, size, angle, direction, and base speed(increments)
+float brokenDirection; //direction for broken asteroids
 float sx, sy, ssize, sspeed; //star x, y, size, and speed
 int shotIndex, brokenIndex; //shotIndex, brokenAsteroid index
 boolean gameOver;
@@ -24,6 +25,9 @@ boolean MOVE_FORWARD; //User is pressing ^ arrow
 public void setup() {
   size(800, 600);
 
+  //Initialize game
+  gameOver = false;
+
   //initialize asteroids
   //setupAsteroids();
   for (int i = 0; i<asteroids.length; i++) {
@@ -31,7 +35,7 @@ public void setup() {
     ry = random(0, height);
     rs = random(.2, .6);
     rd = random(0, 360);
-    rsize = random(20, 50);
+    rsize = random(30, 60);
     asteroids[i] = new Asteroid(rx, ry, rs, rd, rsize);
   }
 
@@ -70,18 +74,31 @@ public void draw() {
       starField[i].move();
   }
 
+  //  System.out.println(asteroids[0].size + " " + asteroids[0].hypotenuse);
+  //  System.out.println("BROKEN " + (asteroids[0].size/2)*((float)Math.random()+1));
+
+  /*brokenAsteroids[0] = new Asteroid(asteroids[0].location.x, asteroids[0].location.y, 
+   asteroids[0].speed/2, brokenDirection, asteroids[0].getHypotenuse()/2);
+   if (asteroids[0] != null) {
+   System.out.println("Asteroid size: " + asteroids[0].size + " Asteroid hypotenuse: " + asteroids[0].hypotenuse);
+   System.out.println("Broken Asteroid size: " + brokenAsteroids[0].size + " Broken Asteroid hypotenuse: " + brokenAsteroids[0].hypotenuse);
+   }*/
+
+
   //Bullet Collision
   for (int i = 0; i<bullets.length; i++) {
     if (bullets[i] != null) {
-      for (int j = 0; j<asteroids.length; j++) {
-        if (asteroids[j] != null) {
-          if (bullets[i].collidingWith(asteroids[j])) {
-            brokenIndex++;
-            killCount++;
-            bullets[i].hit = true;
-            asteroids[j] = null;
-            brokenAsteroids[brokenIndex]
-          }
+      for (int j = 0; j<asteroids.length; j++) { //collision with asteroids
+        if (asteroids[j] != null && bullets[i].collidingWith(asteroids[j])) {
+          killCount++;
+          bullets[i].hit = true;
+          asteroids[j].hit = true;
+        }
+      }
+      for(int k = brokenIndex; k<brokenIndex+2; k++){
+        if(brokenAsteroids[k] != null && bullets[i].collidingWith(brokenAsteroids[k])){
+          bullets[i] = null;
+          brokenAsteroids[k].hit = true;
         }
       }
     }
@@ -95,11 +112,15 @@ public void draw() {
     if (asteroids[i] != null) {
       asteroids[i].show();
       asteroids[i].update();
-      for (int j = 0; j<asteroids.length; j++) {
-        if (asteroids[i] != asteroids[j] && asteroids[j] != null) {
-          if (asteroids[i].collidingWith(asteroids[j]))
-            System.out.println("");
+      checkOnAsteroids();
+      if (asteroids[i].hit) {
+        for (int k = brokenIndex; k<brokenIndex+2; k++) { //make two new broken asteroids
+          brokenDirection = random(0, 360);
+          brokenAsteroids[k] = new Asteroid(asteroids[i].location.x, asteroids[i].location.y, 
+            asteroids[i].speed/2, brokenDirection, asteroids[i].getHypotenuse()/2);
         }
+        brokenIndex += 2;
+        asteroids[i] = null;
       }
     }
   }
@@ -109,6 +130,8 @@ public void draw() {
     if (brokenAsteroids[i] != null) {
       brokenAsteroids[i].show();
       brokenAsteroids[i].update();
+      if (brokenAsteroids[i].hit)
+        brokenAsteroids[i] = null;
     }
   }
 
@@ -123,9 +146,6 @@ public void draw() {
       }
     }
   }
-
-  //System.out.println(dist(player1.location.x, player1.location.y, 
-  //    asteroids[0].getX(), asteroids[0].getY()));
 
   //Bullets
   for (int i = 0; i<bullets.length-1; i++) {
@@ -149,6 +169,11 @@ public void draw() {
   fill(#FF520D);
   textSize(12);
   text(stats, 30, 30);
+
+  //Next Level
+  if (nextLevel()) {
+    //enter reset work here
+  }
 }
 
 
@@ -195,6 +220,34 @@ void keyReleased() {
   }
 }
 
+
+void checkOnAsteroids() {
+  for (int i = 0; i<asteroids.length; i++) {
+    if (asteroids[i] != null) {
+      Asteroid a1 = asteroids[i];
+      for (int j = 0; j<asteroids.length; j++) {
+        if (asteroids[j] != null) {
+          Asteroid a2 = asteroids[j];
+          if (a1 != a2 && a1.collidingWith(a2)) {
+            //enter work
+          }
+        }
+      }
+    }
+  }
+}
+
+boolean nextLevel() {
+  for (int i = 0; i<asteroids.length; i++) {
+    if (asteroids[i] != null)
+      return false;
+  }
+  for (int i = 0; i<brokenAsteroids.length; i++) {
+    if (brokenAsteroids[i] != null)
+      return false;
+  }
+  return true;
+}
 
 //setup for asteroids
 /*void setupAsteroids() {

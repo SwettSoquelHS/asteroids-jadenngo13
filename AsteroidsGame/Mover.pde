@@ -32,6 +32,11 @@ interface Movable {
    */
   float getRadius();
 
+  /*
+    Returns hypotenuse value of asteroid
+  */
+  float getHypotenuse();
+  
   /* 
    Sets the direction of the Movable
    */
@@ -122,7 +127,8 @@ abstract class Mover implements Movable {// implements Movable {
     TODO: Part 4: Implement collision detection
    */
   boolean collidingWith(Movable object) {
-    return(dist(location.x, location.y, object.getX(), object.getY()) < (object.getRadius())+ (size/2));
+    float distance = (object.getRadius())+ (size/2);
+    return(dist(location.x, location.y, object.getX(), object.getY()) < distance);
   }
 
   //TODO: Part I: implement the methods of Moveable interface - delete this comment

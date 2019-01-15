@@ -15,7 +15,8 @@ class Asteroid extends Mover {
   Asteroid(float x, float y, float speed, float direction, float size) {
     super(x, y, speed, direction, size);
     rotation = 360/8;
-    this.hypotenuse = size*((float)Math.random()+1);
+    //this.hypotenuse = size*((float)Math.random()+1);
+    this.hypotenuse = random(size-1, size+1);
     for (int i = 0; i<offSet.length; i++) {
       offSet[i] = random(-5, 5);
     }
@@ -76,7 +77,11 @@ class Asteroid extends Mover {
   float getSpeed() {
     return speed;
   }
-
+  
+  float getHypotenuse(){
+    return hypotenuse;
+  }
+  
   void setDirection(float newDirectionInDegrees) {
     direction = newDirectionInDegrees;
   }

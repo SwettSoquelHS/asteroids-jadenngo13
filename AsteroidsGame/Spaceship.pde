@@ -64,18 +64,18 @@ class Spaceship extends Mover {
       if (speed < 0)
         speed = 0;
     }
-    
+
     //testing out of bounds
-    if(location.x > width+size){
+    if (location.x > width+size) {
       location.x = -size;
-    } else if(location.x < -size){
+    } else if (location.x < -size) {
       location.x = width+size;
-    } else if(location.y > height+size){
+    } else if (location.y > height+size) {
       location.y = -size;
-    } else if(location.y < -size){
+    } else if (location.y < -size) {
       location.y = height+size;
     } 
-    
+
     super.update();
   }
 
@@ -97,6 +97,10 @@ class Spaceship extends Mover {
 
   float getSpeed() {
     return speed;
+  }
+
+  float getHypotenuse() {
+    return 0;
   }
 
   void setDirection(float newDirectionInDegrees) {

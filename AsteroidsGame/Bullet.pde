@@ -31,20 +31,24 @@ class Bullet extends Mover {
   float getDirection() {
     return direction;
   }
-  
-  float getRadius(){
+
+  float getRadius() {
     return size;
   }
-  
-  float getSpeed(){
+
+  float getSpeed() {
     return speed;
   }
-  
-  void setDirection(float newDirectionInDegrees){
+
+  float getHypotenuse() {
+    return 0;
+  }
+
+  void setDirection(float newDirectionInDegrees) {
     direction = newDirectionInDegrees;
   }
-  
-  void setSpeed(float newSpeed){
+
+  void setSpeed(float newSpeed) {
     speed = newSpeed;
   }
 }
