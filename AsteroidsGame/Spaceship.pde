@@ -5,14 +5,16 @@
  might be useful.
  */
 class Spaceship extends Mover {
-  float hitbox; //ship x, y, hitbox, speed, and direction
+  float hitbox, hyperArea; //hitbox of ship, possible area for hyperSpace
   boolean FORWARD, RLEFT, RRIGHT;
+  PVector hyperLocation, test;
   int lives;
 
   Spaceship(float x, float y, float speed, float direction, float size) {
     super(x, y, speed, direction, size);
     lives = 4;
     this.size = 30;
+    test = new PVector(0, 0);
   }
 
   void show() {
@@ -77,6 +79,21 @@ class Spaceship extends Mover {
     } 
 
     super.update();
+  }
+
+  //hyperSpace!!!
+  void hyperSpace() {
+    beginShape();
+    noFill();
+    stroke(#18FF0D);
+    ellipse(location.x, location.y, hyperArea, hyperArea);
+    noStroke();
+    endShape();
+    
+    float a = (float)Math.random() * 2 * PI; //generate a random point in hyperSpace circle
+    float r = hyperArea * sqrt((float)Math.random());
+    hyperLocation = new PVector(((r * cos(a))/2) + location.x, ((r * sin(a))/2) + location.y);
+    
   }
 
   float getX() {

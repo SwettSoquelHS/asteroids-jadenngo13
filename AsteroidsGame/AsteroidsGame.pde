@@ -6,17 +6,19 @@ Spaceship player1;
 float rx, ry, rs, rsize, angle, rd, baseSpeed; //rock x, y, size, angle, direction, and base speed(increments)
 float brokenDirection; //direction for broken asteroids
 float sx, sy, ssize, sspeed; //star x, y, size, and speed
-int shotIndex, brokenIndex; //shotIndex, brokenAsteroid index
-boolean gameOver;
+int shotIndex, brokenIndex, level, randomAssignment; //shotIndex, brokenAsteroid index, level
+boolean gameOver, nextLevel;
 float score, shotCount, killCount;
-String stats;
+String stats, gameOverScreen, gameOverInstruct;
+int timer;
 
 /*
   Track User keyboard input
  */
-boolean ROTATE_LEFT;  //User is pressing <-
-boolean ROTATE_RIGHT; //User is pressing ->
-boolean MOVE_FORWARD; //User is pressing ^ arrow
+boolean ROTATE_LEFT;  //User is pressing a
+boolean ROTATE_RIGHT; //User is pressing d
+boolean MOVE_FORWARD; //User is pressing w arrow
+boolean HYPERSPACE; //user is pressing q
 
 
 /* * * * * * * * * * * * * * * * * * * * * * *
@@ -27,18 +29,25 @@ public void setup() {
 
   //Initialize game
   gameOver = false;
+  level = 1;
+
+  //String initialization
+  gameOverScreen = "Game Over";
+  gameOverInstruct = "Press 'r' to restart";
 
   //initialize asteroids
   //setupAsteroids();
-  for (int i = 0; i<asteroids.length; i++) {
-    rx = random(0, width);
-    ry = random(0, height);
-    rs = random(.2, .6);
-    rd = random(0, 360);
-    rsize = random(30, 60);
-    asteroids[i] = new Asteroid(rx, ry, rs, rd, rsize);
-  }
+  /*  for (int i = 0; i<asteroids.length; i++) {
+   rx = random(0, width);
+   ry = random(0, height);
+   rs = random(.2, .6);
+   rd = random(0, 360);
+   rsize = random(30, 60);
+   asteroids[i] = new Asteroid(rx, ry, rs, rd, rsize);
+   } */
 
+  //setup asteroids
+  setupAsteroids(); //(on line 258)
   for (int i = 0; i<brokenAsteroids.length; i++) {
     brokenAsteroids[i] = null;
   }
@@ -67,6 +76,9 @@ public void setup() {
 public void draw() {
   background(0);
 
+  //game mechanics
+  timer = millis() / 1000;
+
   //Starfield
   for (int i = 0; i<starField.length; i++) {
     starField[i].show();
@@ -74,16 +86,8 @@ public void draw() {
       starField[i].move();
   }
 
-  //  System.out.println(asteroids[0].size + " " + asteroids[0].hypotenuse);
-  //  System.out.println("BROKEN " + (asteroids[0].size/2)*((float)Math.random()+1));
-
-  /*brokenAsteroids[0] = new Asteroid(asteroids[0].location.x, asteroids[0].location.y, 
-   asteroids[0].speed/2, brokenDirection, asteroids[0].getHypotenuse()/2);
-   if (asteroids[0] != null) {
-   System.out.println("Asteroid size: " + asteroids[0].size + " Asteroid hypotenuse: " + asteroids[0].hypotenuse);
-   System.out.println("Broken Asteroid size: " + brokenAsteroids[0].size + " Broken Asteroid hypotenuse: " + brokenAsteroids[0].hypotenuse);
-   }*/
-
+  //Check for asteroid collisions against other asteroids and alter course
+  //TODO: Part III, for now keep this comment in place
 
   //Bullet Collision
   for (int i = 0; i<bullets.length; i++) {
@@ -95,17 +99,16 @@ public void draw() {
           asteroids[j].hit = true;
         }
       }
-      for(int k = brokenIndex; k<brokenIndex+2; k++){
-        if(brokenAsteroids[k] != null && bullets[i].collidingWith(brokenAsteroids[k])){
-          bullets[i] = null;
-          brokenAsteroids[k].hit = true;
+      for (int k = 0; k<brokenAsteroids.length; k++) {
+        if (brokenAsteroids[k] != null) {
+          if (bullets[i].collidingWith(brokenAsteroids[k])) {
+            bullets[i].hit = true;
+            brokenAsteroids[k].hit = true;
+          }
         }
       }
     }
   }
-
-  //Check for asteroid collisions against other asteroids and alter course
-  //TODO: Part III, for now keep this comment in place
 
   //Draw Asteroids
   for (int i = 0; i<asteroids.length; i++) {
@@ -138,7 +141,7 @@ public void draw() {
   //Spaceship
   player1.show();
   player1.update();
-  for (int i = 0; i<asteroids.length; i++) {
+  for (int i = 0; i<asteroids.length; i++) { //asteroid collision
     if (asteroids[i] != null) {
       if (player1.collidingWith(asteroids[i])) {
         asteroids[i] = null;
@@ -146,6 +149,20 @@ public void draw() {
       }
     }
   }
+  for (int i = 0; i<brokenAsteroids.length; i++) { //broken asteroid collision
+    if (brokenAsteroids[i] != null) {
+      if (player1.collidingWith(brokenAsteroids[i])) {
+        brokenAsteroids[i] = null;
+        player1.lives--;
+      }
+    }
+  }
+  if (HYPERSPACE) {
+    player1.hyperArea += 4;
+    player1.hyperSpace();
+  }
+
+  System.out.println(player1.test.x + " " + player1.test.y);
 
   //Bullets
   for (int i = 0; i<bullets.length-1; i++) {
@@ -164,15 +181,29 @@ public void draw() {
   //Stats
   stats = "Total Score: " + score +
     "\n Total Lives: " + player1.lives + 
-    "\n Level: ";
+    "\n Level: " + level;
   score = round((100*(killCount/shotCount) + 100*(killCount)));
   fill(#FF520D);
   textSize(12);
   text(stats, 30, 30);
 
-  //Next Level
-  if (nextLevel()) {
-    //enter reset work here
+  //Game status
+  gameUpdate();
+  if (nextLevel) {
+    level++;
+    setupAsteroids();
+    brokenIndex = 0;
+    if (level % 3 == 0) {
+      if (player1.lives < 4)
+        player1.lives++;
+    }
+  }
+  if (gameOver) {
+    fill(#FA1703);
+    textSize(40);
+    text(gameOverScreen, (width/2)-100, height/2);
+    textSize(20);
+    text(gameOverInstruct, (width/2)-75, (height/2)+50);
   }
 }
 
@@ -203,6 +234,11 @@ void keyPressed() {
   } else if (key == 'w') {
     MOVE_FORWARD = true;
   }
+  if (key == CODED) {
+    if (keyCode == SHIFT) {
+      HYPERSPACE = true;
+    }
+  }
 }
 
 
@@ -217,6 +253,13 @@ void keyReleased() {
     ROTATE_RIGHT = false;
   } else if (key == 'w') {
     MOVE_FORWARD = false;
+  }
+  if (key == CODED) {
+    if (keyCode == SHIFT) {
+      HYPERSPACE = false;
+      player1.location = player1.hyperLocation;
+      player1.hyperArea = 0;
+    }
   }
 }
 
@@ -237,42 +280,47 @@ void checkOnAsteroids() {
   }
 }
 
-boolean nextLevel() {
+void gameUpdate() {
+  nextLevel = true;
   for (int i = 0; i<asteroids.length; i++) {
-    if (asteroids[i] != null)
-      return false;
+    if (asteroids[i] != null) {
+      nextLevel = false;
+    }
   }
   for (int i = 0; i<brokenAsteroids.length; i++) {
-    if (brokenAsteroids[i] != null)
-      return false;
+    if (brokenAsteroids[i] != null) {
+      nextLevel = false;
+    }
   }
-  return true;
+  if (player1.lives == 0) {
+    gameOver = true;
+  }
 }
 
 //setup for asteroids
-/*void setupAsteroids() {
- for (int i = 0; i<asteroids.length; i++) {
- randomAssignment = (int)random(0, 3);
- if (randomAssignment == 0) {
- rx = random(100, width-100);
- ry = random(-200, 0);
- rd = random(110, 70);
- } else if (randomAssignment == 1) {
- rx = random(0, width);
- ry = random(height, height+200);
- rd = random(-110, -70);
- } else if (randomAssignment == 2) {
- rx = random(-100, 0);
- ry = random(100, height-100);
- rd = random(-20, 20);
- } else {
- rx = random(width, width+100);
- ry = random(0, height);
- rd = random(170, 210);
- }
- rsides = 8;
- rs = random(baseSpeed + .1, baseSpeed + .4);
- rsize = random(30, 50);
- asteroids[i] = new Asteroid(rx, ry, rs, rsize, rd, rsides, 1); //x, y, speed, direction, sides, hypotenuse
- }
- } */
+void setupAsteroids() {
+  int randomAssignment;
+  for (int i = 0; i<asteroids.length; i++) {
+    randomAssignment = (int)random(0, 4);
+    if (randomAssignment == 0) { //random assignment to evenly distribute asteroids on all sides of the screen
+      rx = random(100, width-100);
+      ry = random(-200, 0);
+      rd = random(110, 70);
+    } else if (randomAssignment == 1) {
+      rx = random(0, width);
+      ry = random(height, height+200);
+      rd = random(-110, -70);
+    } else if (randomAssignment == 2) {
+      rx = random(-100, 0);
+      ry = random(100, height-100);
+      rd = random(-20, 20);
+    } else {
+      rx = random(width, width+100);
+      ry = random(0, height);
+      rd = random(170, 210);
+    }
+    rs = random(baseSpeed + .1, baseSpeed + .4);
+    rsize = random(30, 50);
+    asteroids[i] = new Asteroid(rx, ry, rs, rd, rsize); //x, y, speed, direction, hypotenuse
+  }
+}
