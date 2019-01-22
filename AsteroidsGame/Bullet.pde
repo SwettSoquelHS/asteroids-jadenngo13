@@ -36,6 +36,10 @@ class Bullet extends Mover {
     return size;
   }
 
+  float getM() {
+    return m;
+  }
+
   float getSpeed() {
     return speed;
   }
@@ -44,6 +48,29 @@ class Bullet extends Mover {
     return 0;
   }
 
+  float getVelocityX() {
+    return velocity.x;
+  }
+
+  float getVelocityY() {
+    return velocity.y;
+  }
+
+  void setVelocityX(float x) {
+    velocity.x = x;
+  }
+
+  void setVelocityY(float y) {
+    velocity.y = y;
+  }
+
+  void setLocationX(float x) {
+    location.x = x;
+  }
+
+  void setLocationY(float y) {
+    location.y = y;
+  }
   void setDirection(float newDirectionInDegrees) {
     direction = newDirectionInDegrees;
   }

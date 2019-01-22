@@ -25,6 +25,7 @@ class Asteroid extends Mover {
       rotation += random(40, 50);
     }
     this.size = dist(coordinates[0].x, coordinates[0].y, coordinates[3].x, coordinates[3].y);
+    m = radius*.1;
   }
 
   void show() {
@@ -42,17 +43,17 @@ class Asteroid extends Mover {
   }
 
   void update() {
-   // System.out.println("Velocity x: " + velocity.x + " Vecloity y: " + velocity.y + " Direction: " + direction);
+    // System.out.println("Velocity x: " + velocity.x + " Vecloity y: " + velocity.y + " Direction: " + direction);
     //System.out.println("Location x: " + location.x + " Location y: " + location.y);
-    
+
     //testing out of bounds
-    if(location.x > width+size){
+    if (location.x > width+size) {
       location.x = -size;
-    } else if(location.x < -size){
+    } else if (location.x < -size) {
       location.x = width+size;
-    } else if(location.y > height+size){
+    } else if (location.y > height+size) {
       location.y = -size;
-    } else if(location.y < -size){
+    } else if (location.y < -size) {
       location.y = height+size;
     }
     super.update();
@@ -74,14 +75,42 @@ class Asteroid extends Mover {
     return size/2;
   }
 
+  float getM() {
+    return m;
+  }
+
   float getSpeed() {
     return speed;
   }
-  
-  float getHypotenuse(){
+
+  float getHypotenuse() {
     return hypotenuse;
   }
   
+  float getVelocityX(){
+    return velocity.x;
+  }
+  
+  float getVelocityY(){
+    return velocity.y;
+  }
+
+  void setVelocityX(float x) {
+    velocity.x = x;
+  }
+
+  void setVelocityY(float y) {
+    velocity.y = y;
+  }
+
+  void setLocationX(float x) {
+    location.x = x;
+  }
+
+  void setLocationY(float y) {
+    location.y = y;
+  }
+
   void setDirection(float newDirectionInDegrees) {
     direction = newDirectionInDegrees;
   }

@@ -6,6 +6,7 @@ Spaceship player1;
 float rx, ry, rs, rsize, angle, rd, baseSpeed; //rock x, y, size, angle, direction, and base speed(increments)
 float brokenDirection; //direction for broken asteroids
 float sx, sy, ssize, sspeed; //star x, y, size, and speed
+Asteroid tempAsteroid;
 int shotIndex, brokenIndex, level, randomAssignment; //shotIndex, brokenAsteroid index, level
 boolean gameOver, nextLevel;
 float score, shotCount, killCount;
@@ -35,25 +36,16 @@ public void setup() {
   gameOverScreen = "Game Over";
   gameOverInstruct = "Press 'r' to restart";
 
-  //initialize asteroids
-  //setupAsteroids();
-  /*  for (int i = 0; i<asteroids.length; i++) {
-   rx = random(0, width);
-   ry = random(0, height);
-   rs = random(.2, .6);
-   rd = random(0, 360);
-   rsize = random(30, 60);
-   asteroids[i] = new Asteroid(rx, ry, rs, rd, rsize);
-   } */
-
   //setup asteroids
   setupAsteroids(); //(on line 258)
+  //asteroids[0] = new Asteroid(0, height/2, 1, 0, 40);
+  //asteroids[1] = new Asteroid(width, height/2, 1, 180, 40);
   for (int i = 0; i<brokenAsteroids.length; i++) {
     brokenAsteroids[i] = null;
   }
 
   //initialize ship
-  player1 = new Spaceship(width/2, height/2, 0, 180, 30); //x, y, speed, direction, size
+  player1 = new Spaceship(width/2, 500, 0, 180, 30); //x, y, speed, direction, size
   for (int i = 0; i<bullets.length; i++) {
     bullets[i] = null;
   }
@@ -99,44 +91,41 @@ public void draw() {
           asteroids[j].hit = true;
         }
       }
-      for (int k = 0; k<brokenAsteroids.length; k++) {
-        if (brokenAsteroids[k] != null) {
-          if (bullets[i].collidingWith(brokenAsteroids[k])) {
-            bullets[i].hit = true;
-            brokenAsteroids[k].hit = true;
-          }
-        }
-      }
     }
   }
 
+  //asteroids[0].collision(asteroids[1]);
   //Draw Asteroids
   for (int i = 0; i<asteroids.length; i++) {
     if (asteroids[i] != null) {
       asteroids[i].show();
       asteroids[i].update();
-      checkOnAsteroids();
       if (asteroids[i].hit) {
-        for (int k = brokenIndex; k<brokenIndex+2; k++) { //make two new broken asteroids
-          brokenDirection = random(0, 360);
-          brokenAsteroids[k] = new Asteroid(asteroids[i].location.x, asteroids[i].location.y, 
-            asteroids[i].speed/2, brokenDirection, asteroids[i].getHypotenuse()/2);
+        if (asteroids[i].getRadius() > 30) {
+          for (int k = 0; k<2; k++) { //make two new broken asteroids
+            brokenDirection = random(0, 360);
+            tempAsteroid = new Asteroid(asteroids[i].location.x, asteroids[i].location.y, 
+              asteroids[i].speed/2, brokenDirection, asteroids[i].getHypotenuse()/2);
+            asteroids = addAsteroid(asteroids, tempAsteroid, asteroids.length-1);
+          }
         }
         brokenIndex += 2;
-        asteroids[i] = null;
+        asteroids = removeAsteroid(asteroids, i);
       }
     }
   }
 
-  //Draw brokenAsteroids (if any)
-  for (int i = 0; i<brokenAsteroids.length; i++) {
-    if (brokenAsteroids[i] != null) {
-      brokenAsteroids[i].show();
-      brokenAsteroids[i].update();
-      if (brokenAsteroids[i].hit)
-        brokenAsteroids[i] = null;
-    }
-  }
+  //Asteroid collision
+  /*for (int i = 0; i<asteroids.length && asteroids[i] != null; i++) {
+   for (int j = 0; j<asteroids.length && asteroids[j] != null; j++) {
+   if (asteroids[i] != asteroids[j]) {
+   asteroids[i].collision(asteroids[j]);
+   }
+   }
+   for (int k = 0; k<brokenAsteroids.length && brokenAsteroids[k] != null; k++) {
+   asteroids[i].collision(brokenAsteroids[k]);
+   }
+   }*/
 
   //Spaceship
   player1.show();
@@ -149,20 +138,10 @@ public void draw() {
       }
     }
   }
-  for (int i = 0; i<brokenAsteroids.length; i++) { //broken asteroid collision
-    if (brokenAsteroids[i] != null) {
-      if (player1.collidingWith(brokenAsteroids[i])) {
-        brokenAsteroids[i] = null;
-        player1.lives--;
-      }
-    }
-  }
   if (HYPERSPACE) {
     player1.hyperArea += 4;
     player1.hyperSpace();
   }
-
-  System.out.println(player1.test.x + " " + player1.test.y);
 
   //Bullets
   for (int i = 0; i<bullets.length-1; i++) {
@@ -263,23 +242,40 @@ void keyReleased() {
   }
 }
 
+/* * * * * * * * * * * * * * * * * * * * * * 
+ Some Game Utils
+ */
 
-void checkOnAsteroids() {
-  for (int i = 0; i<asteroids.length; i++) {
-    if (asteroids[i] != null) {
-      Asteroid a1 = asteroids[i];
-      for (int j = 0; j<asteroids.length; j++) {
-        if (asteroids[j] != null) {
-          Asteroid a2 = asteroids[j];
-          if (a1 != a2 && a1.collidingWith(a2)) {
-            //enter work
-          }
-        }
-      }
-    }
+//removing asteroids
+Asteroid[] removeAsteroid(Asteroid[] asteroids, int index) {
+  Asteroid[] tempArray = new Asteroid[asteroids.length-1];
+  for (int i = 0; i<index; i++) {
+    tempArray[i] = asteroids[i];
   }
+  for (int i = index+1; i<asteroids.length; i++) {
+    tempArray[i-1] = asteroids[i];
+  }
+  asteroids = tempArray;
+  return asteroids;
 }
 
+
+//adding asteroids
+Asteroid[] addAsteroid(Asteroid[] asteroids, Asteroid a, int index) {
+  Asteroid[] tempArray = new Asteroid[asteroids.length+1];
+  for (int i = 0; i<index; i++) {
+    tempArray[i] = asteroids[i];
+  }
+  tempArray[index] = a;
+  for (int i = index+1; i<asteroids.length; i++) {
+    tempArray[i] = asteroids[i-1];
+  }
+  asteroids = tempArray;
+  return asteroids;
+}
+
+
+//checking for next level
 void gameUpdate() {
   nextLevel = true;
   for (int i = 0; i<asteroids.length; i++) {
@@ -296,6 +292,7 @@ void gameUpdate() {
     gameOver = true;
   }
 }
+
 
 //setup for asteroids
 void setupAsteroids() {

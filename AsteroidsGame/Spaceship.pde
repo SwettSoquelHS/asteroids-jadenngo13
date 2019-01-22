@@ -89,11 +89,10 @@ class Spaceship extends Mover {
     ellipse(location.x, location.y, hyperArea, hyperArea);
     noStroke();
     endShape();
-    
+
     float a = (float)Math.random() * 2 * PI; //generate a random point in hyperSpace circle
     float r = hyperArea * sqrt((float)Math.random());
     hyperLocation = new PVector(((r * cos(a))/2) + location.x, ((r * sin(a))/2) + location.y);
-    
   }
 
   float getX() {
@@ -108,6 +107,10 @@ class Spaceship extends Mover {
     return direction;
   }
 
+  float getM() {
+    return m;
+  }
+
   float getRadius() {
     return hitbox/2;
   }
@@ -118,6 +121,30 @@ class Spaceship extends Mover {
 
   float getHypotenuse() {
     return 0;
+  }
+
+  float getVelocityX() {
+    return velocity.x;
+  }
+
+  float getVelocityY() {
+    return velocity.y;
+  }
+
+  void setVelocityX(float x) {
+    velocity.x = x;
+  }
+
+  void setVelocityY(float y) {
+    velocity.y = y;
+  }
+
+  void setLocationX(float x) {
+    location.x = x;
+  }
+
+  void setLocationY(float y) {
+    location.y = y;
   }
 
   void setDirection(float newDirectionInDegrees) {
