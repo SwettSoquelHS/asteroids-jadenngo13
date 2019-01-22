@@ -25,7 +25,6 @@ class Asteroid extends Mover {
       rotation += random(40, 50);
     }
     this.size = dist(coordinates[0].x, coordinates[0].y, coordinates[3].x, coordinates[3].y);
-    m = radius*.1;
   }
 
   void show() {
@@ -75,8 +74,8 @@ class Asteroid extends Mover {
     return size/2;
   }
 
-  float getM() {
-    return m;
+  float getSize() {
+    return size;
   }
 
   float getSpeed() {
@@ -86,21 +85,17 @@ class Asteroid extends Mover {
   float getHypotenuse() {
     return hypotenuse;
   }
-  
-  float getVelocityX(){
+
+  float getVelocityX() {
     return velocity.x;
   }
-  
-  float getVelocityY(){
+
+  float getVelocityY() {
     return velocity.y;
   }
 
-  void setVelocityX(float x) {
-    velocity.x = x;
-  }
-
-  void setVelocityY(float y) {
-    velocity.y = y;
+  void setVelocity(PVector v) {
+    velocity = v;
   }
 
   void setLocationX(float x) {

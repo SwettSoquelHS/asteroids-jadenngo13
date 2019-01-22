@@ -36,8 +36,8 @@ class Bullet extends Mover {
     return size;
   }
 
-  float getM() {
-    return m;
+  float getSize() {
+    return size;
   }
 
   float getSpeed() {
@@ -56,12 +56,8 @@ class Bullet extends Mover {
     return velocity.y;
   }
 
-  void setVelocityX(float x) {
-    velocity.x = x;
-  }
-
-  void setVelocityY(float y) {
-    velocity.y = y;
+  void setVelocity(PVector v) {
+    velocity = v;
   }
 
   void setLocationX(float x) {
