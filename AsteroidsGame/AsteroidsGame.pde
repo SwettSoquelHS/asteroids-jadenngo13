@@ -98,8 +98,15 @@ public void draw() {
   //Draw Asteroids
   for (int i = 0; i<asteroids.length; i++) {
     if (asteroids[i] != null) {
+      if (!gameOver) {
+        asteroids[i].update();
+      }
       asteroids[i].show();
+<<<<<<< HEAD
       asteroids[i].update();
+=======
+      checkOnAsteroids();
+>>>>>>> 24a3cf470c872393fdd1806b945b96f2c92a8f3d
       if (asteroids[i].hit) {
         if (asteroids[i].getRadius() > 30) {
           for (int k = 0; k<2; k++) { //make two new broken asteroids
@@ -115,6 +122,7 @@ public void draw() {
     }
   }
 
+<<<<<<< HEAD
   //Asteroid collision
   /*for (int i = 0; i<asteroids.length && asteroids[i] != null; i++) {
    for (int j = 0; j<asteroids.length && asteroids[j] != null; j++) {
@@ -126,10 +134,25 @@ public void draw() {
    asteroids[i].collision(brokenAsteroids[k]);
    }
    }*/
+=======
+  //Draw brokenAsteroids (if any)
+  for (int i = 0; i<brokenAsteroids.length; i++) {
+    if (brokenAsteroids[i] != null) {
+      if (!gameOver) {
+        brokenAsteroids[i].update();
+      }
+      brokenAsteroids[i].show();
+      if (brokenAsteroids[i].hit)
+        brokenAsteroids[i] = null;
+    }
+  }
+>>>>>>> 24a3cf470c872393fdd1806b945b96f2c92a8f3d
 
   //Spaceship
+  if (!gameOver) {
+    player1.update();
+  }
   player1.show();
-  player1.update();
   for (int i = 0; i<asteroids.length; i++) { //asteroid collision
     if (asteroids[i] != null) {
       if (player1.collidingWith(asteroids[i])) {
@@ -138,7 +161,19 @@ public void draw() {
       }
     }
   }
+<<<<<<< HEAD
   if (HYPERSPACE) {
+=======
+  for (int i = 0; i<brokenAsteroids.length; i++) { //broken asteroid collision
+    if (brokenAsteroids[i] != null) {
+      if (player1.collidingWith(brokenAsteroids[i])) {
+        brokenAsteroids[i] = null;
+        player1.lives--;
+      }
+    }
+  }
+  if (HYPERSPACE && !gameOver) {
+>>>>>>> 24a3cf470c872393fdd1806b945b96f2c92a8f3d
     player1.hyperArea += 4;
     player1.hyperSpace();
   }
@@ -146,7 +181,9 @@ public void draw() {
   //Bullets
   for (int i = 0; i<bullets.length-1; i++) {
     if (bullets[i] != null) {
-      bullets[i].update();
+      if (!gameOver) {
+        bullets[i].update();
+      }
       bullets[i].show();
       if (bullets[i].dud || bullets[i].hit) {
         bullets[i] = null;
@@ -170,6 +207,7 @@ public void draw() {
   gameUpdate();
   if (nextLevel) {
     level++;
+    baseSpeed += .1;
     setupAsteroids();
     brokenIndex = 0;
     if (level % 3 == 0) {
@@ -184,7 +222,6 @@ public void draw() {
     textSize(20);
     text(gameOverInstruct, (width/2)-75, (height/2)+50);
   }
-}
 
 
 /* * * * * * * * * * * * * * * * * * * * * * *
@@ -212,6 +249,10 @@ void keyPressed() {
     ROTATE_RIGHT = true;
   } else if (key == 'w') {
     MOVE_FORWARD = true;
+  } else if (key == 'r') {
+    if (gameOver) {
+      resetGame();
+    }
   }
   if (key == CODED) {
     if (keyCode == SHIFT) {
@@ -242,6 +283,7 @@ void keyReleased() {
   }
 }
 
+<<<<<<< HEAD
 /* * * * * * * * * * * * * * * * * * * * * * 
  Some Game Utils
  */
@@ -254,6 +296,21 @@ Asteroid[] removeAsteroid(Asteroid[] asteroids, int index) {
   }
   for (int i = index+1; i<asteroids.length; i++) {
     tempArray[i-1] = asteroids[i];
+=======
+void checkOnAsteroids() {
+  for (int i = 0; i<asteroids.length; i++) {
+    if (asteroids[i] != null) {
+      Asteroid a1 = asteroids[i];
+      for (int j = 0; j<asteroids.length; j++) {
+        if (asteroids[j] != null) {
+          Asteroid a2 = asteroids[j];
+          if (a1 != a2 && a1.collidingWith(a2)) {
+            //enter work
+          }
+        }
+      }
+    }
+>>>>>>> 24a3cf470c872393fdd1806b945b96f2c92a8f3d
   }
   asteroids = tempArray;
   return asteroids;
@@ -320,4 +377,16 @@ void setupAsteroids() {
     rsize = random(30, 50);
     asteroids[i] = new Asteroid(rx, ry, rs, rd, rsize); //x, y, speed, direction, hypotenuse
   }
+}
+
+//reset game
+void resetGame() {
+  level = 0;
+  baseSpeed = 0;
+  player1.lives = 4;
+  killCount = 0;
+  shotCount = 0;
+  gameOver = false;
+  player1 = new Spaceship(width/2, height/2, 0, 180, 30); //x, y, speed, direction, size
+  setupAsteroids();
 }
