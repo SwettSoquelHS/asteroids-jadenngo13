@@ -109,6 +109,8 @@ public void draw() {
   if (asteroids[0].collidingWith(asteroids[1])) {
     asteroids[0].collision(asteroids[1]);
   }
+  
+  
   //Draw Asteroids
   for (int i = 0; i<asteroids.length; i++) {
     if (asteroids[i] != null) {
@@ -117,7 +119,6 @@ public void draw() {
       }
       asteroids[i].show();
       asteroids[i].update();
-      checkOnAsteroids();
       if (asteroids[i].hit) {
         if (asteroids[i].getRadius() > 30) {
           for (int k = 0; k<2; k++) { //make two new broken asteroids
@@ -141,19 +142,7 @@ public void draw() {
    }
    }
    }*/
-
-  //Draw brokenAsteroids (if any)
-  for (int i = 0; i<brokenAsteroids.length; i++) {
-    if (brokenAsteroids[i] != null) {
-      if (!gameOver) {
-        brokenAsteroids[i].update();
-      }
-      brokenAsteroids[i].show();
-      if (brokenAsteroids[i].hit)
-      brokenAsteroids[i] = null;
-    }
-  }
-
+   
   //Spaceship
   if (!gameOver) {
     player1.update();
@@ -168,20 +157,11 @@ public void draw() {
     }
   }
 
-  if (HYPERSPACE) {
-    for (int i = 0; i<brokenAsteroids.length; i++) { //broken asteroid collision
-      if (brokenAsteroids[i] != null) {
-        if (player1.collidingWith(brokenAsteroids[i])) {
-          brokenAsteroids[i] = null;
-          player1.lives--;
-        }
-      }
-    }
-    if (HYPERSPACE && !gameOver) {
+  if (HYPERSPACE && !gameOver) {
       player1.hyperArea += 4;
       player1.hyperSpace();
-    }
   }
+  
   //Stats
   score = round((100*(killCount/shotCount) + 100*(killCount)));
   stats = "Total Score: " + score +
