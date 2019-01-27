@@ -94,6 +94,9 @@ interface Movable {
    be able to collide with iteself.
    */
   boolean collidingWith(Movable object);
+  
+  void collision();
+  
 }
 //END OF Movable Interface
 
