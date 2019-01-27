@@ -1,5 +1,5 @@
-Asteroid[] asteroids = new Asteroid[2];
-Asteroid[] brokenAsteroids = new Asteroid[4];
+Asteroid[] asteroids = new Asteroid[10];
+Asteroid[] brokenAsteroids = new Asteroid[20];
 Star[] starField = new Star[100];
 Bullet[] bullets = new Bullet[10];
 Spaceship player1;
@@ -38,7 +38,7 @@ public void setup() {
 
   //setup asteroids
   //setupAsteroids(); //(on line 258)
-  asteroids[0] = new Asteroid(0, height/2, 1, 0, 40);
+  asteroids[0] = new Asteroid(width/2, 0, .8, 90, 40);
   asteroids[1] = new Asteroid(width, height/2, 1, 180, 40);
   for (int i = 0; i<brokenAsteroids.length; i++) {
     brokenAsteroids[i] = null;
