@@ -74,4 +74,7 @@ class Bullet extends Mover {
   void setSpeed(float newSpeed) {
     speed = newSpeed;
   }
+  
+  void collision(){
+  }
 }

@@ -113,19 +113,7 @@ abstract class Mover implements Movable {// implements Movable {
   protected int myColor;
   protected float radius;  
 
-  /*
-    Default Mover, not actually moving and directionless
-   */
-  /*Mover(float x, float y) {
-   //The line below shows how we can 
-   //link this constructor to the constructor below through "this"
-   this(x, y, 0, 0);
-   }*/
-
-  /*
-    Mover constructor specifying x, y position along with its speed and
-   direction (in degrees)
-   */
+  //CONSTRUCTOR
   Mover(float x, float y, float speed, float direction, float size) {
     location = new PVector(x, y);
     velocity = new PVector(speed*(float)Math.cos(radians(direction)), 
@@ -136,42 +124,39 @@ abstract class Mover implements Movable {// implements Movable {
     myColor = 225;
     radius = size/2;
   }
+  //
+  
 
-  /*
-    Most of your movalbe objects should follow this pattern.
-   */
+  //UPDATE WORK
   void update() {
     location.x += velocity.x; //update x and y
     location.y += velocity.y;
     location.x = location.x + speed*(float)Math.cos(radians(direction));
     location.y = location.y + speed*(float)Math.sin(radians(direction));
   }
-
-
-
-  /*
-    Save this for your subclasses to override.
-   but notice how it is tagged with abstract, meaning 
-   it is incomplete. (It's like an I.O.U.)
-   */
+  //
+  
+  
+  //Show function overridden in each class object
   abstract void show();
 
-
-  /*
-    TODO: Part 4: Implement collision detection
-   */
+  
+  //HIT DETECTION WORK
   boolean collidingWith(Movable object) {
     float distance = (object.getRadius())+ (size/2);
     return(dist(location.x, location.y, object.getX(), object.getY()) < distance);
   }
-
+  //
+  
+  
+  //COLLISION WORK (new velocities)
   void collision(Movable object) {
-    PVector finalVel, finalVel1;
+    PVector finalVel;
 
     finalVel = new PVector( .95*((2*size*velocity.x)+(object.getVelocityX()*(object.getSize()-size)))/(object.getSize()+size) ,  
       .95*((2*size*velocity.y)+(object.getVelocityY()*(object.getSize()-size)))/(object.getSize()+size) );
       
     velocity = finalVel;
   }
-  //TODO: Part I: implement the methods of Moveable interface - delete this comment
+  //
 }
