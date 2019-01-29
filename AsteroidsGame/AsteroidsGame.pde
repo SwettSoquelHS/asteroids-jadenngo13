@@ -1,9 +1,9 @@
-ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
-ArrayList<Bullet> bullets = new ArrayList<Bullet>();
+ArrayList asteroids = new ArrayList();
+ArrayList bullets = new ArrayList();
 Star[] starField = new Star[100];
-ArrayList<Asteroid> removeAst = new ArrayList<Asteroid>(); //used to prevent ConcurrentModificationException
-ArrayList<Asteroid> addAst = new ArrayList<Asteroid>(); //
-ArrayList<Bullet> removeBullet = new ArrayList<Bullet>(); //
+ArrayList removeAst = new ArrayList(); //used to prevent ConcurrentModificationException
+ArrayList addAst = new ArrayList(); //
+ArrayList removeBullet = new ArrayList(); //
 
 Spaceship player1;
 float rx, ry, rs, rsize, angle, rd, baseSpeed; //rock x, y, size, angle, direction, and base speed(increments)
@@ -67,11 +67,13 @@ public void setup() {
  */
 public void draw() {
   background(0);
+  fill(0, 80);
+  rect(0, 0, width, height);
   
   //Reset removing arrays
-  ArrayList<Bullet> removeBullet = new ArrayList<Bullet>();
-  ArrayList<Asteroid> removeAst = new ArrayList<Asteroid>();
-  ArrayList<Asteroid> addAst = new ArrayList<Asteroid>();
+  ArrayList removeBullet = new ArrayList();
+  ArrayList removeAst = new ArrayList();
+  ArrayList addAst = new ArrayList();
   
 
   //game mechanics
@@ -87,7 +89,8 @@ public void draw() {
   }
   player1.show();
 
-  for (Asteroid a : asteroids) { //asteroid collision
+  for (Object obj : asteroids) { //asteroid collision
+    Asteroid a = (Asteroid)obj;
     if (player1.collidingWith(a)) {
       removeAst.add(a);
       player1.lives--;
@@ -98,7 +101,8 @@ public void draw() {
 
 
   //BULLET WORK
-  for (Bullet b : bullets) {
+  for (Object obj : bullets) {
+    Bullet b = (Bullet) obj;
     if (!gameOver) {
       b.update();
     }
@@ -109,8 +113,10 @@ public void draw() {
   } 
   bullets.removeAll(removeBullet);
 
-  for (Bullet b : bullets) { //collision
-    for (Asteroid a : asteroids) {
+  for (Object obj : bullets) { //collision
+    Bullet a = (Bullet) obj;
+    for (Object obj1 : asteroids) {
+      Asteroid b = (Asteroid) obj1;
       if (b.collidingWith(a)) {
         killCount++;
         b.hit = true;
@@ -131,7 +137,8 @@ public void draw() {
 
 
   //ASTEROID WORK
-  for (Asteroid a : asteroids) {
+  for (Object obj : asteroids) {
+    Asteroid a = (Asteroid) obj;
     a.show();
     if (!gameOver) {
       a.update();
@@ -147,7 +154,8 @@ public void draw() {
         brokenIndex += 2;
         removeAst.add(a);
       }
-      for (Asteroid b : asteroids) { //asteroid collision
+      for (Object obj1 : asteroids) { //asteroid collision
+        Asteroid b = (Asteroid) obj1;
         if (a != b) {
           if (a.collidingWith(b)) {
             a.collision(b);
@@ -160,14 +168,13 @@ public void draw() {
   asteroids.removeAll(removeAst);
   //
 
-
   //GAME STATE WORK
   gameUpdate();
   if (nextLevel) {
     level++;
     baseSpeed += .1;
     //setupAsteroids();
-    System.out.println("NEXT LEVEL");
+    //System.out.println("NEXT LEVEL");
     if (level % 3 == 0) {
       if (player1.lives < 4)
         player1.lives++;
@@ -275,7 +282,7 @@ void gameUpdate() {
 //SETUP FOR ASTEROIDS
 void setupAsteroids() {
   int randomAssignment;
-  for (int i = 0; i<asteroids.size(); i++) {
+  for (int i = 0; i<10; i++){
     randomAssignment = (int)random(0, 4);
     if (randomAssignment == 0) { //random assignment to evenly distribute asteroids on all sides of the screen
       rx = random(100, width-100);

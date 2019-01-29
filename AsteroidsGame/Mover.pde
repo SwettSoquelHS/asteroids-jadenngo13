@@ -153,9 +153,14 @@ abstract class Mover implements Movable {// implements Movable {
   void collision(Movable object) {
     PVector finalVel;
 
-    finalVel = new PVector( .95*((2*size*velocity.x)+(object.getVelocityX()*(object.getSize()-size)))/(object.getSize()+size) ,  
+   /* finalVel = new PVector( .95*((2*size*velocity.x)+(object.getVelocityX()*(object.getSize()-size)))/(object.getSize()+size) ,  
       .95*((2*size*velocity.y)+(object.getVelocityY()*(object.getSize()-size)))/(object.getSize()+size) );
       
+    finalVel = new PVector(size*velocity.x)+(object.getSize()*object.getVelocityX()) 
+      -(size*/
+    finalVel = new PVector((size - object.getSize())/(size+object.getSize())*velocity.x,
+      (size - object.getSize())/(size+object.getSize())*velocity.y);
+    
     velocity = finalVel;
   }
   //
