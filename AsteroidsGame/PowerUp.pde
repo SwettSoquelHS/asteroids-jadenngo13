@@ -1,6 +1,7 @@
 class PowerUp extends Mover {
   boolean dud;
   float life, oscillate, r, s;
+  int type; //not used yet but will be if chosen to make diff types of power ups
 
   PowerUp(float x, float y, float speed, float direction, float size) {
     super(x, y, speed, direction, size);

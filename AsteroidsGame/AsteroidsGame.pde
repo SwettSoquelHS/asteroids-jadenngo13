@@ -15,10 +15,11 @@ Asteroid tempAsteroid;
 int shotIndex, brokenIndex, level, randomAssignment; //shotIndex, brokenAsteroid index, level
 int powerUpCount;
 float spreadAngle; //used for shot gun shot
-boolean gameOver, nextLevel;
-float score, shotCount, killCount;
+boolean gameOver, nextLevel, startingScreen;
+float shotCount, killCount;
+int score;
 String stats, gameOverScreen, gameOverInstruct;
-float timer;
+int timer, r; //used for randomizing powerUp spawning
 
 /*
   Track User keyboard input
@@ -38,6 +39,7 @@ public void setup() {
   //Initialize game
   gameOver = false;
   level = 1;
+  startingScreen = true;
 
   //String initialization
   gameOverScreen = "Game Over";
@@ -63,8 +65,6 @@ public void setup() {
     sspeed = random(.5, .8);
     starField[i] = new Star(sx, sy, ssize, sspeed);
   }
-  PowerUp p = new PowerUp(random(0, width), random(0, height), 1, 180, 35);
-  powerUps.add(p);
 }
 
 
@@ -76,6 +76,9 @@ public void draw() {
   fill(0, 150);
   rect(0, 0, width, height);
 
+
+
+
   //Reset removing arrays
   ArrayList removeBullet = new ArrayList();
   ArrayList removeAst = new ArrayList();
@@ -84,13 +87,23 @@ public void draw() {
 
 
   //game mechanics
-  timer = millis() / 1000;
+  timer = (int)millis() / 1000;
+  r = (int)random(0, 200);
 
   //PowerUp Work
+  if (timer % 10 == 0) {
+    if (r == 0) {
+      PowerUp p = new PowerUp(width+20, random(0, height), 2, 180, 40);
+      powerUps.add(p);
+    }
+  }
+
   for (Object obj : powerUps) {
     PowerUp p = (PowerUp)obj;
     p.show();
-    p.update();
+    if (!gameOver) {
+      p.update();
+    }
     if (p.dud) {
       removePowerUp.add(p);
     }
@@ -241,12 +254,12 @@ void mousePressed() {
       Bullet b = new Bullet(player1.location.x, player1.location.y, 2, player1.direction+spreadAngle, 10);
       bullets.add(b);
       spreadAngle+=10;
-      shotCount++;
     }
     player1.powerUpShots--;
   } else {
     Bullet b = new Bullet(player1.location.x, player1.location.y, 2, player1.direction, 10);
     bullets.add(b);
+    shotCount++;
   }
 }
 //
