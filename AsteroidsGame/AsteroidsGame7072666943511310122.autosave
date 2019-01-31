@@ -1,11 +1,9 @@
-ArrayList asteroids = new ArrayList();
-ArrayList bullets = new ArrayList();
-ArrayList powerUps = new ArrayList();
+ArrayList<Asteroid> asteroids = new ArrayList<Asteroid>();
+ArrayList<Bullet> bullets = new ArrayList<Bullet>();
 Star[] starField = new Star[100];
-ArrayList removeAst = new ArrayList(); //used to prevent ConcurrentModificationException
-ArrayList addAst = new ArrayList(); //
-ArrayList removeBullet = new ArrayList(); //
-ArrayList removePowerUp = new ArrayList();//
+ArrayList<Asteroid> removeAst = new ArrayList<Asteroid>(); //used to prevent ConcurrentModificationException
+ArrayList<Asteroid> addAst = new ArrayList<Asteroid>(); //
+ArrayList<Bullet> removeBullet = new ArrayList<Bullet>(); //
 
 Spaceship player1;
 float rx, ry, rs, rsize, angle, rd, baseSpeed; //rock x, y, size, angle, direction, and base speed(increments)
@@ -13,12 +11,10 @@ float brokenDirection; //direction for broken asteroids
 float sx, sy, ssize, sspeed; //star x, y, size, and speed
 Asteroid tempAsteroid;
 int shotIndex, brokenIndex, level, randomAssignment; //shotIndex, brokenAsteroid index, level
-int powerUpCount;
-float spreadAngle; //used for shot gun shot
 boolean gameOver, nextLevel;
 float score, shotCount, killCount;
 String stats, gameOverScreen, gameOverInstruct;
-float timer;
+int timer;
 
 /*
   Track User keyboard input
@@ -44,11 +40,11 @@ public void setup() {
   gameOverInstruct = "Press 'r' to restart";
 
   //setup asteroids
-  setupAsteroids(); //(on line 258)
-  /*Asteroid a = new Asteroid(width/2, 0, .8, 90, 40);
-   Asteroid b = new Asteroid(width, height/2, 1, 180, 40);
-   asteroids.add(a);
-   asteroids.add(b);*/
+  //setupAsteroids(); //(on line 258)
+  Asteroid a = new Asteroid(width/2, 0, .8, 90, 40);
+  Asteroid b = new Asteroid(width, height/2, 1, 180, 40);
+  asteroids.add(a);
+  asteroids.add(b);
 
   //initialize ship
   player1 = new Spaceship(width/2, 500, 0, 180, 30); //x, y, speed, direction, size
@@ -63,8 +59,6 @@ public void setup() {
     sspeed = random(.5, .8);
     starField[i] = new Star(sx, sy, ssize, sspeed);
   }
-  PowerUp p = new PowerUp(random(0, width), random(0, height), 1, 180, 35);
-  powerUps.add(p);
 }
 
 
@@ -72,32 +66,16 @@ public void setup() {
  Drawing work here
  */
 public void draw() {
-  //background(0);
-  fill(0, 150);
-  rect(0, 0, width, height);
-
+  background(0);
+  
   //Reset removing arrays
-  ArrayList removeBullet = new ArrayList();
-  ArrayList removeAst = new ArrayList();
-  ArrayList removePowerUp = new ArrayList();
-  ArrayList addAst = new ArrayList();
-
+  ArrayList<Bullet> removeBullet = new ArrayList<Bullet>();
+  ArrayList<Asteroid> removeAst = new ArrayList<Asteroid>();
+  ArrayList<Asteroid> addAst = new ArrayList<Asteroid>();
+  
 
   //game mechanics
   timer = millis() / 1000;
-
-  //PowerUp Work
-  for (Object obj : powerUps) {
-    PowerUp p = (PowerUp)obj;
-    p.show();
-    p.update();
-    if (p.dud) {
-      removePowerUp.add(p);
-    }
-  }
-  powerUps.removeAll(removePowerUp);
-  //
-
 
   //SPACESHIP WORK
   if (!gameOver) {
@@ -108,28 +86,18 @@ public void draw() {
     }
   }
   player1.show();
-
-  for (Object obj : asteroids) { //asteroid collision
-    Asteroid a = (Asteroid)obj;
+  for (Asteroid a : asteroids) { //asteroid collision
     if (player1.collidingWith(a)) {
       removeAst.add(a);
       player1.lives--;
     }
   }
-
-  for (Object obj : powerUps) {
-    PowerUp p = (PowerUp)obj;
-    if (player1.collidingWith(p)) {
-      p.dud = true;
-      player1.powerUpShots += 5;
-    }
-  }
+  //asteroids.removeAll(removeAst);
   //
 
 
   //BULLET WORK
-  for (Object obj : bullets) {
-    Bullet b = (Bullet) obj;
+  for (Bullet b : bullets) {
     if (!gameOver) {
       b.update();
     }
@@ -140,10 +108,8 @@ public void draw() {
   } 
   bullets.removeAll(removeBullet);
 
-  for (Object obj : bullets) { //collision
-    Bullet a = (Bullet) obj;
-    for (Object obj1 : asteroids) {
-      Asteroid b = (Asteroid) obj1;
+  for (Bullet b : bullets) { //collision
+    for (Asteroid a : asteroids) {
       if (b.collidingWith(a)) {
         killCount++;
         b.hit = true;
@@ -164,29 +130,26 @@ public void draw() {
 
 
   //ASTEROID WORK
-  for (Object obj : asteroids) {
-    Asteroid a = (Asteroid) obj;
+  for (Asteroid a : asteroids) {
     a.show();
     if (!gameOver) {
       a.update();
       if (a.hit) {
         if (a.getRadius() > 30) {
-          brokenDirection = random(0, 360);
           for (int k = 0; k<2; k++) { //make two new broken asteroids
+            brokenDirection = random(0, 360);
             Asteroid newAsteroid = new Asteroid(a.location.x, a.location.y, 
               a.speed/2, brokenDirection, a.getHypotenuse()/2);
             addAst.add(newAsteroid);
-            brokenDirection -= random(160, 200);
           }
         }
         brokenIndex += 2;
         removeAst.add(a);
       }
-      for (Object obj1 : asteroids) { //asteroid collision
-        Asteroid b = (Asteroid) obj1;
+      for (Asteroid b : asteroids) { //asteroid collision
         if (a != b) {
           if (a.collidingWith(b)) {
-            //a.collision(b);
+            a.collision(b);
           }
         }
       }
@@ -196,12 +159,14 @@ public void draw() {
   asteroids.removeAll(removeAst);
   //
 
+
   //GAME STATE WORK
   gameUpdate();
   if (nextLevel) {
     level++;
     baseSpeed += .1;
-    setupAsteroids();
+    //setupAsteroids();
+    System.out.println("NEXT LEVEL");
     if (level % 3 == 0) {
       if (player1.lives < 4)
         player1.lives++;
@@ -222,31 +187,23 @@ public void draw() {
   score = round((100*(killCount/shotCount) + 100*(killCount)));
   stats = "Total Score: " + score +
     "\n Total Lives: " + player1.lives + 
-    "\n Level: " + level + 
-    "\n PowerUp Shots: " + player1.powerUpShots;
+    "\n Level: " + level;
   fill(#FF520D);
   textSize(12);
   text(stats, 30, 30);
   //
 }
 
+
 /* * * * * * * * * * * * * * * * * * * * * * *
  Record relevent mouse presses for game
  */
 void mousePressed() {
   //add shooting stuff here
-  if (player1.powerUpShots > 0) { //if the player has powerUp shots, use them
-    spreadAngle = -15;
-    for (int i = 0; i<4; i++) {
-      Bullet b = new Bullet(player1.location.x, player1.location.y, 2, player1.direction+spreadAngle, 10);
-      bullets.add(b);
-      spreadAngle+=10;
-      shotCount++;
-    }
-    player1.powerUpShots--;
-  } else {
+  if (bullets.size() <= 10) {
     Bullet b = new Bullet(player1.location.x, player1.location.y, 2, player1.direction, 10);
     bullets.add(b);
+    shotCount++;
   }
 }
 //
@@ -317,7 +274,7 @@ void gameUpdate() {
 //SETUP FOR ASTEROIDS
 void setupAsteroids() {
   int randomAssignment;
-  for (int i = 0; i<10; i++) {
+  for (int i = 0; i<asteroids.size(); i++) {
     randomAssignment = (int)random(0, 4);
     if (randomAssignment == 0) { //random assignment to evenly distribute asteroids on all sides of the screen
       rx = random(100, width-100);

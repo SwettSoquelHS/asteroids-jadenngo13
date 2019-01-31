@@ -34,11 +34,11 @@ class Asteroid extends Mover {
     beginShape();
     stroke(250);
     fill(#2E1708);
-    /* for (int i = 0; i<coordinates.length; i++) {
+     for (int i = 0; i<coordinates.length; i++) {
      vertex(coordinates[i].x, coordinates[i].y);
-     }*/
-    line(0, 0, velocity.x*100, velocity.y*100);
-    ellipse(0, 0, radius, radius);
+     }
+    /*line(0, 0, velocity.x*100, velocity.y*100);
+    ellipse(0, 0, radius, radius);*/
     endShape(CLOSE);
     popMatrix();
   }

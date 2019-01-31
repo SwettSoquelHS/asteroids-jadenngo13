@@ -8,12 +8,13 @@ class Spaceship extends Mover {
   float hitbox, hyperArea; //hitbox of ship, possible area for hyperSpace
   boolean FORWARD, RLEFT, RRIGHT;
   PVector hyperLocation;
-  int lives;
+  int lives, powerUpShots;
 
   Spaceship(float x, float y, float speed, float direction, float size) {
     super(x, y, speed, direction, size);
-    lives = 4;
     this.size = 30;
+    lives = 4;
+    powerUpShots = 0;
   }
 
   void show() {

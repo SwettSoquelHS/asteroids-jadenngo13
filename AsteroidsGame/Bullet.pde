@@ -17,7 +17,7 @@ class Bullet extends Mover {
 
   void show() {
     fill(#0DBCFF);
-    ellipse(location.x, location.y, size, size);
+    ellipse(location.x, location.y, radius, radius);
   }
 
   float getX() {
