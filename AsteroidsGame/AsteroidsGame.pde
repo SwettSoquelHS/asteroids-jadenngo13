@@ -32,9 +32,9 @@ boolean HYPERSPACE; //user is pressing q
 
 /* * * * * * * * * * * * * * * * * * * * * * *
  Initialize all of your variables and game state here
- */
+ *
 public void setup() {
-  size(800, 600);
+  size(800, 600);s
 
   //Initialize game
   gameOver = false;
