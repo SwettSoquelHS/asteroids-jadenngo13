@@ -1,11 +1,11 @@
-ArrayList asteroids = new ArrayList();
-ArrayList bullets = new ArrayList();
-ArrayList powerUps = new ArrayList();
+ArrayList asteroids;
+ArrayList bullets;
+ArrayList powerUps;
 Star[] starField = new Star[100];
-ArrayList removeAst = new ArrayList(); //used to prevent ConcurrentModificationException
-ArrayList addAst = new ArrayList(); //
-ArrayList removeBullet = new ArrayList(); //
-ArrayList removePowerUp = new ArrayList();//
+ArrayList removeAst; //used to prevent ConcurrentModificationException
+ArrayList addAst;//
+ArrayList removeBullet; //
+ArrayList removePowerUp;//
 
 Spaceship player1;
 float rx, ry, rs, rsize, angle, rd, baseSpeed; //rock x, y, size, angle, direction, and base speed(increments)
@@ -32,9 +32,18 @@ boolean HYPERSPACE; //user is pressing q
 
 /* * * * * * * * * * * * * * * * * * * * * * *
  Initialize all of your variables and game state here
- *
+ * */
 public void setup() {
-  size(800, 600);s
+  size(800, 600);
+
+  //intializing arrayLists
+  asteroids = new ArrayList();
+  bullets = new ArrayList();
+  powerUps = new ArrayList();
+  removeAst = new ArrayList(); //used to prevent ConcurrentModificationException
+  addAst = new ArrayList(); //
+  removeBullet = new ArrayList(); //
+  removePowerUp = new ArrayList();//
 
   //Initialize game
   gameOver = false;
@@ -67,7 +76,6 @@ public void setup() {
   }
 }
 
-
 /* * * * * * * * * * * * * * * * * * * * * * *
  Drawing work here
  */
@@ -75,9 +83,6 @@ public void draw() {
   //background(0);
   fill(0, 150);
   rect(0, 0, width, height);
-
-
-
 
   //Reset removing arrays
   ArrayList removeBullet = new ArrayList();
