@@ -6,7 +6,7 @@
  but the final program should use "beginShape(), vertex(), and endShape()"
  to render the asteroid.
  */
-class Asteroid extends Mover {   
+class Asteroid extends Mover {
   float hypotenuse, rotation;
   float[] offSet = new float[8];
   PVector[] coordinates = new PVector[8];
